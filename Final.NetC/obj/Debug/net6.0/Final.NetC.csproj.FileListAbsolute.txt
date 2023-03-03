@@ -1,0 +1,15 @@
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\Final.NetC.exe
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\Final.NetC.deps.json
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\Final.NetC.runtimeconfig.json
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\Final.NetC.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\Final.NetC.pdb
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.csproj.AssemblyReference.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.AssemblyInfoInputs.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.AssemblyInfo.cs
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.csproj.CoreCompileInputs.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\refint\Final.NetC.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.pdb
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\Final.NetC.genruntimeconfig.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\ref\Final.NetC.dll

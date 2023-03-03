@@ -1,0 +1,15 @@
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.csproj.AssemblyReference.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.AssemblyInfoInputs.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.AssemblyInfo.cs
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.csproj.CoreCompileInputs.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\VegetableMarket.exe
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\VegetableMarket.deps.json
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\VegetableMarket.runtimeconfig.json
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\VegetableMarket.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\bin\Debug\net6.0\VegetableMarket.pdb
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\refint\VegetableMarket.dll
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.pdb
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\VegetableMarket.genruntimeconfig.cache
+C:\Users\nvale\source\repos\Final.NetC\Final.NetC\obj\Debug\net6.0\ref\VegetableMarket.dll
