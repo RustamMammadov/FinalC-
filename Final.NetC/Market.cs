@@ -10,149 +10,242 @@ namespace VegetableMarket
 {
     public class Market
     {
+        #region Property
 
         public Dictionary<VegetableAssortment, Stack<Vegetable>> MarketStands { get; set; } = new();
-        public Queue<Customer> CustomerQueue { get; set; } = new();
-        public int WorkerCount { get; set; } = 2;
-        public Dictionary<Vegetable ,int> Trash { get; set; } = new();
-        public double MarketCashBox { get; set; } = 1000;
-        public double MoneyEarned { get; set; } = 0;
-        public double CashBox { get; set; } = 0;
+        public Queue<Customer> CustomerQueueWeek { get; set; } = new();
+        public Queue<Customer> CustomerQueueHour { get; set; } = new();
+        public int WorkerCount { get; set; } = 1;
+        public Dictionary<VegetableAssortment, int> TrashHour { get; set; } = new();
+        public Dictionary<VegetableAssortment, int> TrashWeek { get; set; } = new();
+        public double CashBoxWeek { get; set; } = 0;
+        public double CashBoxHour { get; set; } = 0;
         public double SpendMoney { get; set; } = 0;
-        public double Rating { get; set; } = 0;
-        public Dictionary<string, int> BuyingVegetableWeek { get; set; } = new();
 
-        public void EmployeeRecruitment()
-        {
-            if (MarketStands.Count > 1)
-            {
-                int acceptedWorkerCount = MarketStands.Count - WorkerCount;
-                if (acceptedWorkerCount > 0) { Console.WriteLine($"\nMarkete {acceptedWorkerCount} ishchi qebul olundu\n"); }
-                WorkerCount += acceptedWorkerCount;
-            }
-        }
+        private double rating = 1;
+        public double Rating { get => rating; set => rating = value < 1 ? 1 : value; }
+        #endregion
 
-        #region Marketin reytinqini artirib azaltma
+        #region Marketin reytinqini artirib azaltma ve ishchi goturme
 
         public void DoIncreaseRating()
         {
             if (Rating < 100) { Rating++; }
+            else if (Rating >= 100)
+            {
+                Rating = 100;
+            }
         }
         public void DoDecreaseRating()
         {
             if (Rating > 0) { Rating--; }
         }
+        public void EmployeeRecruitment()// Ishchi goturme methodu
+        {
+            WorkerCount += 1;
+
+
+        }
         #endregion
 
-        #region Terevez alinma
-
-        Vegetable CreateNewVegetable() // Mehsul cesidini artirma//Marketde olmayan terevez  qaytarir
+        #region Customer
+        public int ArrivalOfTheCustomerCount()//neche dene alici gelecek
         {
-            //mümkün Tərəvəz Növləri Siyahısi
-            var possibleVegetablesTypeList = Enum.GetValues(typeof(VegetableAssortment)).Cast<VegetableAssortment>().ToList();
-            //movcud terevez novleri siyahisi
-            var existingVegetablesTypeList = MarketStands.Keys.ToList();
-
-            var newVegetable = new Vegetable();
-            foreach (var possibleItem in possibleVegetablesTypeList)
+            int count;
+            count = (int)Rating;
+            return count;
+        }
+        public Dictionary<VegetableAssortment, int> ShoppingList()//hansi terevezleri ve neche dene alacaq
+        {
+            List<VegetableAssortment> vegetableAssortments = new();//alinan terevezlerin adlari olacaq.
+            var existingVegetablesTypeList = MarketStands.Keys.ToList();//movcud terevez novleri siyahisi
+            var random = new Random();
+            int randomInt = random.Next(1, existingVegetablesTypeList.Count + 1);//neche nov terevez alacaq
+            for (int i = 1; i <= randomInt; i++)//
             {
-                if (!existingVegetablesTypeList.Contains(possibleItem))
-                {
-                    newVegetable = new(possibleItem);
-                }
+                int c = random.Next(0, existingVegetablesTypeList.Count);//hansi terevezi alacaq
+                if (!vegetableAssortments.Contains(existingVegetablesTypeList[c]))
+                    vegetableAssortments.Add(existingVegetablesTypeList[c]);
+                else i--;
             }
 
-            return newVegetable;
-        }
+            //List<Tuple<VegetableAssortment, int>> shoppingList = new();
+            Dictionary<VegetableAssortment, int> shoppingList = new();
+            //var randomm = new Random();
 
-        Dictionary<VegetableAssortment, double> HowBuyVegetable() //hansi terevez  ve ya terevezler alinmalidir
-        {
-            Dictionary<VegetableAssortment, double> vegNameAndRating = new();
-            if (!(MarketStands.Count() == 0))
+            foreach (var vegetableAssortment in vegetableAssortments)
             {
-                foreach (var stack in MarketStands.Values)
+                int howMuchVegetable = random.Next(1, 5); //neche dene alacaq
+                Tuple<VegetableAssortment, int> tuple = new(vegetableAssortment, howMuchVegetable);
+                shoppingList.Add(tuple.Item1, tuple.Item2);
+            }
+            return shoppingList;
+        }
+        public bool HaveShoppingListToMarket(Dictionary<VegetableAssortment, int> shoppingList)
+        {
+            if (MarketStands.Count > shoppingList.Count)
+            {
+                foreach (var item in shoppingList)
                 {
-                    foreach (var item in stack)
+                    if (MarketStands.ContainsKey(item.Key) && MarketStands[item.Key].Count < item.Value)
                     {
-                        if (item.Rating > 1)
-                            vegNameAndRating.Add(item.VegetableName, item.Rating);
+                        return false;
                     }
                 }
-                if (Rating % 10 > 0)
-                {
-                    vegNameAndRating.Add(CreateNewVegetable().VegetableName, 10); //Markete yeni terevez elave olundu
-
-                }
-                return vegNameAndRating;
             }
-            vegNameAndRating.Add(CreateNewVegetable().VegetableName, 10);//Markete terevez alindi
-            return vegNameAndRating;
+            return true;
         }
-
-        Dictionary<VegetableAssortment, Stack<Vegetable>> BuyVegetable()
-        //bazardan reytinqe uygun ne qeder terevez alinmali
+        public void ShowCustomerChek(Dictionary<VegetableAssortment, int> shoppingList)
         {
-            Dictionary<VegetableAssortment, double> vegNameAndRating = HowBuyVegetable();//hansi terevez ve reytinqi
-            Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack = new();
-            foreach (var item in vegNameAndRating)
+            if (shoppingList.Count >= 0)
             {
-                Stack<Vegetable> stackVeg = new();
-                for (int i = 0; i < (item.Value * 10); i++)
+                double sum = 0;
+                foreach (var item in shoppingList)
                 {
-                    Vegetable veg = new(item.Key);
-                    stackVeg.Push(veg);//toxic ve fresh terevezler ola biler
+                    Console.WriteLine($"{item.Key}  {item.Value} eded --- {GetVegetableSalesPrice(item.Key) * item.Value} AZN");
+                    sum += (GetVegetableSalesPrice(item.Key) * item.Value);
                 }
-                dicEnumAndStack.Add(stackVeg.Peek().VegetableName, stackVeg);
-
+                Console.WriteLine($"\nOdenilecek mebleg : {sum}\n");
             }
-            return dicEnumAndStack;
         }
-
-        public void BuyingVegetableCount(Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack)
-        //Getirilen terevezlerin adi ve sayini BuyingVegetableWeek elave edecek ve gosterecek
+        public void CustomerBuyingVegetable()
         {
-            BuyingVegetableWeek.Clear();
-            if (dicEnumAndStack.Count > 0)
+            int customerCount = ArrivalOfTheCustomerCount();//nece alici gelecek
+            Console.WriteLine("*************************************************************");
+            Console.WriteLine($"Markete {customerCount} alici geldi");
+            for (int c = 1; c <= customerCount; c++)
             {
-                foreach (var stend in dicEnumAndStack)
-                {
-                    
-                    BuyingVegetableWeek.Add(stend.Key.ToString(), stend.Value.Count);
-                    Console.WriteLine($"\n{stend.Value.Count()} eded {stend.Key} alindi.\n");
-                }
-            }
+                Thread.Sleep(1000);
+                Customer customer = new();
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.WriteLine($"Alici < {customer.Id} >");
+                CustomerQueueHour.Enqueue(customer);
+                CustomerQueueWeek.Enqueue(customer);
 
-        }
-
-        public void AddVegetablesToMarket()
-        //vegetable, mARketde yoxdusa yeni stend yaradacaq varsa elave edecek,xerclenen pullari SpendMoney elave edecek
-        {
-            Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack = BuyVegetable();//alinacaq terevez
-            BuyingVegetableCount(dicEnumAndStack); //alinan terevezleri gosterecek
-            foreach (var item in dicEnumAndStack)
-            {
-                if (MarketStands.ContainsKey(item.Key))//marketde varsa uygun stende elave et
+                List<Vegetable> customerBasket = new();//alicinin sebeti
+                Dictionary<VegetableAssortment, int> shoppingList = ShoppingList();// hansi terevezleri ve neche dene alacaq
+                bool exit = false;
+                if (HaveShoppingListToMarket(shoppingList))
                 {
-                    foreach (var veg in item.Value)
+                    foreach (var tuple in shoppingList)
                     {
-                        MarketCashBox -= veg.BuyingPrice;//bazardan terevez alir
-                        SpendMoney += veg.BuyingPrice; // xerclenen pullara elave olunur
-                        MarketStands[item.Key].Push(veg);
+                        if (exit)
+                        {
+                            Rating--;
+                            break;
+                        }
+                        for (int i = 0; i < tuple.Value; i++)
+                        {
+                            var temp = MarketStands[tuple.Key].Pop();
+                            if (temp.VegetableStatus == VegetableStore.VegetableStatus.Toxic)
+                            {
+                                exit = true;
+                                if (TrashHour.ContainsKey(temp.VegetableName))
+                                {
+                                    TrashHour[temp.VegetableName] = +1;
+                                }
+                                else
+                                {
+                                    TrashHour.Add(temp.VegetableName, 1);
+                                }
+                                VegetableStore.DoDecreaseRatingVegetable(temp.VegetableName);//TerevezinReytinqiniAzaltma
+                                break;
+                            }
+                            else if (temp.VegetableStatus == VegetableStore.VegetableStatus.Rotten)
+                            {
+                                Console.WriteLine("\nMushteri churuk terevezi atdi\n");
+                                if (TrashHour.ContainsKey(temp.VegetableName))
+                                {
+                                    TrashHour[temp.VegetableName] = +1;
+                                }
+                                else
+                                {
+                                    TrashHour.Add(temp.VegetableName, 1);
+                                }
+                                i--;
+                                VegetableStore.DoDecreaseRatingVegetable(temp.VegetableName);//TerevezinReytinqiniAzaltma
+                            }
+                            else
+                            {
+                                customerBasket.Add(temp);
+                                VegetableStore.DoIncreaseRatingVegetable(temp.VegetableName);//TerevezinReytinqiniArtirma
+                            }
+                        }
+                    }
+                    if (exit)
+                    {
+                        Console.WriteLine("Mushteri toxik terevez gorduyu uchun dukani terk etdi.");
+                    }
+                    else
+                    {
+                        foreach (var vegetable in customerBasket)
+                        {
+                            CashBoxHour += vegetable.SalePrice;
+                        }
+                        CashBoxWeek += CashBoxHour;
+                        foreach (var tuple in TrashHour)
+                        {
+                            if (TrashHour.ContainsKey(tuple.Key))
+                            {
+                                TrashHour[tuple.Key] += tuple.Value;
+                            }
+                            else
+                            {
+                                TrashHour.Add(tuple.Key, tuple.Value);
+                            }
+                        }
+                        Rating += 0.1;
+                        Console.WriteLine("Mushterinin aldigi terevezler:");
+                        ShowCustomerChek(shoppingList);
+                        Console.WriteLine("Mushteri Kassaya odenish etdi ve dukani terk etdi.");
                     }
                 }
-                else // marketde yoxdursa Yeni stand yarat
+                else if (!exit)
                 {
-                    MarketCashBox -= item.Value.Peek().BuyingPrice * item.Value.Count;//bazardan terevez alir
-                    SpendMoney += item.Value.Peek().BuyingPrice * item.Value.Count;// xerclenen pullara elave olunur
-                    MarketStands.Add(item.Key, item.Value);
+                    Console.WriteLine("Mushterinin almaq istediyi terevezler marketde olmadigi uchun, marketi terk etdi.");
                 }
             }
+            Console.WriteLine("*************************************************************");
+            
         }
+        #endregion
 
+        #region Show
+        public void ShowMarketHour()
+        {
+            Console.WriteLine($"\n<<<<<<<<<<<<<<< Market Haqqinda Saatliq Melumat >>>>>>>>>>>>>>>\n");
+
+            Console.WriteLine($"Marketin Reytinqi : {Rating}");
+            Console.WriteLine($"Bir saat erzinde mushteri sayi : {CustomerQueueHour.Count}");
+            Console.WriteLine($"Bir saat erzinde Qazanilmish pul : {CashBoxHour}");
+            Console.WriteLine($"Stenddeki mehsullar :");
+            if (MarketStands.Count > 0)
+            {
+                foreach (var stend in MarketStands)
+                {
+                    Console.WriteLine($"{stend.Key} --- {stend.Value.Count} eded");
+                }
+            }
+            else { Console.WriteLine("\nStend boshdur"); }
+
+            ShowTrash(TrashHour);
+            Console.WriteLine($"\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        }
+        public void ShowTrash(Dictionary<VegetableAssortment, int> Trash)
+        {
+            if (Trash.Count > 0)
+            {
+                Console.WriteLine("\nAtilan terevezler :");
+                foreach (var item in Trash)
+                {
+                    Console.WriteLine($"{item.Key} --- {item.Value} ");
+                }
+            }
+            else { Console.WriteLine("Atilan terevez yoxdur"); }
+        }
         #endregion
 
         #region Terevez kohnelme
-
         Vegetable RotVegetableRandomly(Vegetable vegetable) //bir terevezin 20% ehtimalla kohnelmesi
         {
             var random = new Random();
@@ -181,23 +274,132 @@ namespace VegetableMarket
 
         public void RotExistingVegetables() //Terevezlerin churume metodu
         {
-            Dictionary<VegetableAssortment, Stack<Vegetable>> tempMarketStands = new();
             foreach (var pair in MarketStands)
             {
+                Stack<Vegetable> tempStackReverse = new();
                 Stack<Vegetable> tempStack = new();
                 foreach (var veg in pair.Value)
                 {
-                    tempStack.Push(RotVegetableRandomly(veg));
+                    tempStackReverse.Push(RotVegetableRandomly(veg));
                 }
-                tempStack.Reverse();
-                tempMarketStands.Add(tempStack.Peek().VegetableName, tempStack);
+                foreach (var veg in tempStackReverse)
+                {
+                    tempStack.Push(veg);
+                }
+                MarketStands[pair.Key] = tempStack;
             }
-            MarketStands = tempMarketStands;
         }
 
         #endregion
 
-        public void CleanToxicAndRotten()//toxic ve churukleri silib Trasha yazmaq,freshleri alta normallari uste yigmaq
+        #region Terevez alinma ve Markete elave olunma
+
+        Vegetable CreateNewVegetable() // Mehsul cesidini artirma//Marketde olmayan terevez  qaytarir
+        {
+            //mümkün Tərəvəz Növləri Siyahısi
+            var possibleVegetablesTypeList = Enum.GetValues(typeof(VegetableAssortment)).Cast<VegetableAssortment>().ToList();
+            //movcud terevez novleri siyahisi
+            var existingVegetablesTypeList = MarketStands.Keys.ToList();
+
+            var newVegetable = new Vegetable();
+            foreach (var possibleItem in possibleVegetablesTypeList)
+            {
+                if (!existingVegetablesTypeList.Contains(possibleItem))
+                {
+                    newVegetable = new(possibleItem);
+                    break;
+                }
+            }
+            return newVegetable;
+        }
+        Dictionary<VegetableAssortment, double> HowBuyVegetable() //hansi terevez  ve ya terevezler alinmalidir
+        {
+            Dictionary<VegetableAssortment, double> vegNameAndRating = new();
+            if (MarketStands.Count() > 0)
+            {
+                foreach (var tuple in MarketStands)
+                {
+                    if (VegetableStore.RatingVegetable(tuple.Key) > 10)
+                    {
+                        vegNameAndRating.Add(tuple.Key, VegetableStore.RatingVegetable(tuple.Key));
+                    }
+                }
+                if (Rating % 10 > 0)
+                {
+                    Vegetable veg = CreateNewVegetable();
+                    vegNameAndRating.Add(veg.VegetableName, VegetableStore.RatingVegetable(veg.VegetableName));
+                    //alinmasi uchun Markete yeni terevez sechildi
+                }
+                return vegNameAndRating;
+            }
+            Vegetable vegetable1 = new(VegetableAssortment.Sogan);
+            Vegetable vegetable2 = new(VegetableAssortment.Kartof);
+            //market boshdursa alinmasi uchun  yeni terevez
+            vegNameAndRating.Add(vegetable1.VegetableName, 1);
+            vegNameAndRating.Add(vegetable2.VegetableName, 1);
+            return vegNameAndRating;
+        }
+        Dictionary<VegetableAssortment, Stack<Vegetable>> BuyVegetable()
+        //bazardan reytinqe uygun bir nov terevez alma
+        {
+            Dictionary<VegetableAssortment, double> vegNameAndRating = HowBuyVegetable();//hansi terevezler ve reytinqi
+            Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack = new();
+            foreach (var item in vegNameAndRating)
+            {
+                Stack<Vegetable> stackVeg = new();
+                for (int i = 0; i < (item.Value * 100); i++)
+                {
+                    Vegetable veg = new(item.Key);
+                    stackVeg.Push(veg);//toxic ve fresh terevezler ola biler
+                    SpendMoney += veg.BuyingPrice;
+                }
+                dicEnumAndStack.Add(item.Key, stackVeg);
+            }
+            return dicEnumAndStack;
+        }
+        public void PrintBuyingVegetable(Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack)
+        //Getirilen terevezlerin adi ve sayini  gosterecek
+        {
+            if (dicEnumAndStack.Count > 0)
+            {
+                foreach (var item in dicEnumAndStack)
+                {
+                    Console.WriteLine($"{item.Value.Count} eded {item.Key} alindi.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Bu hefte terevez alinmayib");
+            }
+        }
+        public void AddVegetablesToMarket()
+        //veg mARketde yoxdusa yeni item yaradacaq varsa elave edecek
+        {
+            int numberOfWorkersHired = 0;
+            Dictionary<VegetableAssortment, Stack<Vegetable>> dicEnumAndStack = BuyVegetable();//alinacaq terevez
+            PrintBuyingVegetable(dicEnumAndStack); //alinan terevezleri gosterecek
+            foreach (var item in dicEnumAndStack)
+            {
+                if (MarketStands.ContainsKey(item.Key))//marketde varsa uygun stende elave et yoxdursa yarat
+                {
+                    foreach (var veg in item.Value)
+                    {
+                        MarketStands[item.Key].Push(veg);//uygun stende elave
+                    }
+                }
+                else // marketde yoxdursa Yeni stand yarat
+                {
+                    MarketStands.Add(item.Key, item.Value);
+                    EmployeeRecruitment(); //ishchi goturur
+                    numberOfWorkersHired++;
+                }
+            }
+            Console.WriteLine($"\nIshe goturulen ishci sayi : {numberOfWorkersHired}");
+            CleanToxicAndRotten(); //toxic ve churukleri silib Trasha yazmaq, freshleri alta normallari uste yigmaq
+            ShowTrash(TrashWeek); //atilanlarin hesabati
+        }
+        public void CleanToxicAndRotten()
+        //toxic ve churukleri silib Trasha yazmaq,freshleri alta normallari uste yigmaq
         {
             Dictionary<VegetableAssortment, Stack<Vegetable>> temporaryDic = new();
 
@@ -209,22 +411,25 @@ namespace VegetableMarket
                 List<Vegetable> tempTrash = new();
                 foreach (var vegetable in stand.Value)
                 {
-                    if (vegetable.VegetableStatus == VegetableStatus.Fresh && vegetable.VegetableStatus == VegetableStatus.Normal)
+                    if (vegetable.VegetableStatus == VegetableStatus.Fresh)
                     {
-                        if (vegetable.VegetableStatus == VegetableStatus.Fresh)
-                        {
-                            tempFresh.Add(vegetable);
-                        }
-                        else
-                        {
-                            tempNormal.Add(vegetable);
-                        }
+                        tempFresh.Add(vegetable);
+                    }
+                    else if (vegetable.VegetableStatus == VegetableStatus.Normal)
+                    {
+                        tempNormal.Add(vegetable);
                     }
                     else
                     {
-                        tempTrash.Add(vegetable);
+                        if (TrashWeek.ContainsKey(stand.Key))
+                        {
+                            TrashWeek[stand.Key] = +1;
+                        }
+                        else
+                        {
+                            TrashWeek.Add(stand.Key, 1);
+                        }
                     }
-
                 }
                 foreach (var vegetable in tempFresh)
                 {
@@ -234,39 +439,42 @@ namespace VegetableMarket
                 {
                     tempStack.Push(vegetable);
                 }
-                temporaryDic.Add(tempStack.Peek().VegetableName, tempStack);
-                foreach (var vegetable in tempTrash)
-                {
-                    Trash.Add(tempTrash[0],tempTrash.Count);
-                }
+                temporaryDic.Add(stand.Key, tempStack);
             }
             MarketStands.Clear();
             MarketStands = temporaryDic;
         }
 
-        public void ShowTrash()
-        {
-            
-            foreach (var item in Trash)
-            {
-                Console.WriteLine("Atilan terevezler :\n");
-                Console.WriteLine($"{item.Key.VegetableName} {item.Value} ");
-                
-            }
-        }
+        #endregion
 
-        public void WriteReport(Report report)
+        #region Clear Statistics
+
+        public void ClearDayStatistics()
+        {
+            CustomerQueueHour.Clear();
+            TrashHour.Clear();
+            CashBoxHour = 0;
+            Console.Clear();
+        }
+        public void ClearWeekStatistics()
+        {
+            CustomerQueueWeek.Clear();
+            TrashWeek.Clear();
+            CashBoxWeek = 0;
+            SpendMoney = 0;
+            Console.Clear();
+        }
+        #endregion
+        public void WriteReport(ref Report report)
         {
             report.TrashReportWeek.Clear();
-            foreach (var item in Trash)
+            foreach (var item in TrashWeek)
             {
-                report.TrashReportWeek.Add(item.Key.VegetableName.ToString(),item.Value);
+                report.TrashReportWeek.Add(item.Key.ToString(), item.Value);
             }
-
             report.Rating = Rating;
-            report.ReportEarnedManeyWeak = MoneyEarned;    
-            report.CustomerCountWeak = CustomerQueue.Count;
+            report.ReportCashBoxWeak = CashBoxWeek;
+            report.CustomerCountWeak = CustomerQueueWeek.Count;
         }
-        
     }
 }

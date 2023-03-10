@@ -12,13 +12,14 @@ namespace VegetableMarket
 
     public class Vegetable
     {
+
         public VegetableStore.VegetableAssortment VegetableName { get; set; }
         public VegetableStore.VegetableStatus VegetableStatus { get; set; } = RandomWhenBuyVegetableStatus();
         // fresh , normal , rotten , toxic
         public double BuyingPrice { get; set; }
         public double SalePrice { get; set; }
-        public double Rating { get; set; } = 1;
-
+        public static double rating = 1;
+        public static double Rating { get => rating; set => rating = value < 1 ? 1 : value; }
         public Vegetable() { }
         public Vegetable(VegetableStore.VegetableAssortment vegetableName)
         {
@@ -29,14 +30,6 @@ namespace VegetableMarket
             Rating = 1;
 
         }
-        public Vegetable(Vegetable newVegetable)
-        {
-            VegetableName = newVegetable.VegetableName;
-            BuyingPrice = newVegetable.BuyingPrice;
-            SalePrice = newVegetable.SalePrice;
-            Rating = newVegetable.Rating;
-        }
-
         public static VegetableStatus RandomWhenBuyVegetableStatus()
         {
             var random = new Random();
@@ -48,8 +41,6 @@ namespace VegetableMarket
                 return VegetableStatus.Toxic;
             else
                 return VegetableStatus.Fresh;
-
         }
     }
 }
-

@@ -1,0 +1,12 @@
+{
+  "Rating": 8.79999999999999,
+  "CustomerCountWeak": 22,
+  "ReportCashBoxWeak": 388.80000000000007,
+  "TrashReportWeek": {
+    "Sogan": 1,
+    "Kartof": 1,
+    "Biber": 1,
+    "Kelem": 1,
+    "Pomidor": 1
+  }
+}
