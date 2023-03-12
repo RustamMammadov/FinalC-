@@ -478,7 +478,7 @@ namespace VegetableMarket
 
         #region Clear Statistics
 
-        public void ClearDayStatistics()
+        public void ClearHourStatistics()
         {
             CustomerQueueHour.Clear();
             TrashHour.Clear();

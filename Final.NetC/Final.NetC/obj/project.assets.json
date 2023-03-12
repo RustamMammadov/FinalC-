@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nvale\\source\\repos\\Final.NetC\\Final.NetC\\VegetableMarket.csproj",
+      "projectUniqueName": "C:\\Users\\nvale\\Downloads\\OneDrive\\İş masası\\Step\\Git Final C#\\Final.NetC\\Final.NetC\\VegetableMarket.csproj",
       "projectName": "VegetableMarket",
-      "projectPath": "C:\\Users\\nvale\\source\\repos\\Final.NetC\\Final.NetC\\VegetableMarket.csproj",
+      "projectPath": "C:\\Users\\nvale\\Downloads\\OneDrive\\İş masası\\Step\\Git Final C#\\Final.NetC\\Final.NetC\\VegetableMarket.csproj",
       "packagesPath": "C:\\Users\\nvale\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nvale\\source\\repos\\Final.NetC\\Final.NetC\\obj\\",
+      "outputPath": "C:\\Users\\nvale\\Downloads\\OneDrive\\İş masası\\Step\\Git Final C#\\Final.NetC\\Final.NetC\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\nvale\\AppData\\Roaming\\NuGet\\NuGet.Config",

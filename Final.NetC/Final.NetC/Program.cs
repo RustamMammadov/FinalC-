@@ -37,10 +37,10 @@ while (true)
         market.CustomerBuyingVegetable();//Mushterinin markete gelishi,terevez almagi
         Thread.Sleep(1000);
         market.ShowMarketHour(); // Her saatda (10 saniyede bir) butun melumatlari print edir
+    }
         Thread.Sleep(10000); // real vaxtla 10 saniyede 1 isleyir = market vaxti ile 1 saatda 1 defe
         Console.Clear();
-        market.ClearDayStatistics();
-    }
+        market.ClearHourStatistics();
 
     if (hourTime % 24 == 0)
     {
